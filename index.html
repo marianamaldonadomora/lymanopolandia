@@ -3,39 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificador de Cartas - Lymanopolandia</title>
+    <title>Lymanopolandia - Verificador de Cartas</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .card-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 480px; text-align: center; }
-        h2 { color: #1f2937; margin-bottom: 10px; }
-        p { color: #4b5563; font-size: 14px; margin-bottom: 20px; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            box-sizing: border-box; 
+        }
+        .card-box { 
+            background: white; 
+            padding: 30px 25px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            width: 100%; 
+            max-width: 480px; 
+            text-align: center; 
+            box-sizing: border-box;
+        }
+
+        /* Encabezado elegante del juego */
+        .game-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 5px 0;
+            letter-spacing: 0.5px;
+        }
+        .game-subtitle {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        /* Contenedor y diseño responsivo para la mariposa real sin fondo */
+        .butterfly-container {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        .butterfly-img { 
+            width: 100%; 
+            height: auto; 
+            max-height: 200px; 
+            object-fit: contain; 
+            display: block; 
+            margin: 0 auto;
+        }
+
         .input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; text-align: left; }
-        label { font-size: 14px; font-weight: bold; color: #374151; }
-        select, input { padding: 10px 15px; font-size: 16px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; width: 100%; box-sizing: border-box; }
-        select:focus, input:focus { border-color: #2563eb; }
-        button { padding: 12px 20px; font-size: 16px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; width: 100%; margin-top: 5px; }
+        label { font-size: 14px; font-weight: bold; color: #334155; }
+        
+        select, input { 
+            padding: 12px 15px; 
+            font-size: 16px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 8px; 
+            outline: none; 
+            width: 100%; 
+            box-sizing: border-box; 
+            background-color: #fff;
+            color: #1e293b;
+        }
+        select:focus, input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        
+        button { 
+            padding: 12px 20px; 
+            font-size: 16px; 
+            font-weight: 600;
+            background-color: #2563eb; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: background 0.2s; 
+            width: 100%; 
+            margin-top: 5px; 
+        }
         button:hover { background-color: #1d4ed8; }
-        .result { margin-top: 20px; text-align: left; background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 8px; }
-        .result h3 { margin-top: 0; color: #111827; font-size: 16px; line-height: 1.4; }
-        .answer-box { margin-top: 10px; background: #eff6ff; border-left: 4px solid #2563eb; padding: 12px; font-size: 15px; color: #1e40af; line-height: 1.4; }
+        
+        .result { margin-top: 20px; text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 10px; }
+        .result h3 { margin-top: 0; color: #0f172a; font-size: 16px; line-height: 1.4; }
+        .answer-box { margin-top: 12px; background: #eff6ff; border-left: 4px solid #2563eb; padding: 12px; font-size: 15px; color: #1e40af; line-height: 1.4; border-radius: 0 6px 6px 0; }
+        
         .hidden { display: none; }
-        .error { color: #dc2626; font-weight: bold; margin-top: 15px; font-size: 14px; }
+        .error { color: #dc2626; font-weight: bold; margin-top: 15px; font-size: 14px; background: #fef2f2; padding: 12px; border-radius: 8px; }
         .loading { color: #2563eb; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div class="card-box">
-        <h2>Verificador de Carta</h2>
-        <p>Selecciona la categoría y el número impreso en tu tarjeta:</p>
-        
+        <!-- Encabezado con el nombre del juego -->
+        <h1 class="game-title">Lymanopolandia</h1>
+        <p class="game-subtitle">Verificador oficial de tarjetas</p>
+
+        <!-- Imagen de la mariposa real integrada estéticamente -->
+        <div class="butterfly-container">
+            <img src="mariposa.jpeg" alt="Lymanopoda" class="butterfly-img" />
+        </div>
+
         <div class="input-group">
-            <label for="cardCategory">Categoría:</label>
+            <label for="cardCategory">Selecciona la categoría:</label>
             <select id="cardCategory">
-                <option value="" disabled selected>Elige una categoría...</option>
-                <option value="aventura">Aventura</option>
-                <option value="laboratorio">Laboratorio</option>
-                <option value="creacion">Niveles de Creación</option>
+                <option value="" disabled selected>Elige una opción...</option>
+                <option value="aventura">aventura</option>
+                <option value="laboratorio">laboratorio</option>
+                <option value="creacion">creacion</option>
             </select>
             
             <label for="cardId">Número de tarjeta:</label>
@@ -59,7 +141,7 @@
     </div>
 
     <script>
-        // ⚠️ API a base de datos ⚠️
+        // ⚠️ Acceso a la API para la base de datos ⚠️
         const API_URL = "https://script.google.com/macros/s/AKfycbxcFY6vw_xNHn-aE7Kz5bWriHIJcy-DjlBYvMsrtSAJ6R7pBoXR_0zWQbkFSVOfL0b78w/exec";
 
         async function consultarCarta() {
