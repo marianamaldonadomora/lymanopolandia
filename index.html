@@ -9,27 +9,38 @@
         .card-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; }
         h2 { color: #1f2937; margin-bottom: 10px; }
         p { color: #4b5563; font-size: 14px; margin-bottom: 20px; }
-        .input-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
-        input { padding: 10px 15px; font-size: 16px; width: 60%; border: 1px solid #d1d5db; border-radius: 6px; outline: none; }
-        input:focus { border-color: #2563eb; }
-        button { padding: 10px 20px; font-size: 16px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+        .input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; text-align: left; }
+        label { font-size: 14px; font-weight: bold; color: #374151; }
+        select, input { padding: 10px 15px; font-size: 16px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; width: 100%; box-sizing: border-box; }
+        select:focus, input:focus { border-color: #2563eb; }
+        button { padding: 12px 20px; font-size: 16px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; width: 100%; margin-top: 5px; }
         button:hover { background-color: #1d4ed8; }
         .result { margin-top: 20px; text-align: left; background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 8px; }
         .result h3 { margin-top: 0; color: #111827; font-size: 16px; }
         .answer-box { margin-top: 10px; background: #eff6ff; border-left: 4px solid #2563eb; padding: 10px; font-size: 15px; color: #1e40af; }
         .hidden { display: none; }
-        .error { color: #dc2626; font-weight: bold; }
+        .error { color: #dc2626; font-weight: bold; margin-top: 15px; }
     </style>
 </head>
 <body>
 
     <div class="card-box">
         <h2>Verificador de Carta</h2>
-        <p>Ingresa el número impreso en tu tarjeta física:</p>
+        <p>Selecciona la categoría y el número impreso en tu tarjeta:</p>
         
         <div class="input-group">
+            <label for="cardCategory">Categoría:</label>
+            <select id="cardCategory">
+                <option value="" disabled selected>Elige una categoría...</option>
+                <option value="aventura">Aventura</option>
+                <option value="laboratorio">Laboratorio</option>
+                <option value="creacion">Niveles de Creación</option>
+            </select>
+            
+            <label for="cardId">Número de tarjeta:</label>
             <input type="number" id="cardId" placeholder="Ej. 1" min="1" />
-            <button onclick="consultarCarta()">Consultar</button>
+            
+            <button onclick="consultarCarta()">Consultar Respuesta</button>
         </div>
 
         <div id="loading" class="hidden">Buscando respuesta...</div>
@@ -42,7 +53,7 @@
         </div>
 
         <div id="errorMsg" class="hidden error">
-            <p>No se encontró ninguna tarjeta con ese número.</p>
+            <p>No se encontró ninguna tarjeta con esa combinación de categoría y número.</p>
         </div>
     </div>
 
@@ -50,17 +61,8 @@
         // ⚠️ API a la base de datos ⚠️
         const API_URL = "https://script.google.com/macros/s/AKfycbz_WyeO2hdhjq0k-P3tZLcwjjsvHmDF1a-Q4QS3fnUlsjna9QV39bxxK_3uH-cqACwgXw/exec";
 
-        // Detectar si la URL trae un parámetro ?id=X (ideal para códigos QR)
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-            if (id) {
-                document.getElementById('cardId').value = id;
-                consultarCarta();
-            }
-        }
-
         async function consultarCarta() {
+            const categoria = document.getElementById('cardCategory').value;
             const id = document.getElementById('cardId').value;
             const resultDiv = document.getElementById('result');
             const errorDiv = document.getElementById('errorMsg');
@@ -69,6 +71,10 @@
             resultDiv.classList.add('hidden');
             errorDiv.classList.add('hidden');
 
+            if (!categoria) {
+                alert("Por favor selecciona una categoría.");
+                return;
+            }
             if (!id) {
                 alert("Por favor ingresa un número de tarjeta.");
                 return;
@@ -77,7 +83,7 @@
             loadingDiv.classList.remove('hidden');
 
             try {
-                const response = await fetch(`${API_URL}?id=${id}`);
+                const response = await fetch(`${API_URL}?categoria=${encodeURIComponent(categoria)}&id=${encodeURIComponent(id)}`);
                 const data = await response.json();
 
                 loadingDiv.classList.add('hidden');
