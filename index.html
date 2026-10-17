@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificador de Cartas - Juego Híbrido</title>
+    <title>Verificador de Cartas - Lymanopolandia</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .card-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; }
+        .card-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 480px; text-align: center; }
         h2 { color: #1f2937; margin-bottom: 10px; }
         p { color: #4b5563; font-size: 14px; margin-bottom: 20px; }
         .input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; text-align: left; }
@@ -16,10 +16,11 @@
         button { padding: 12px 20px; font-size: 16px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; width: 100%; margin-top: 5px; }
         button:hover { background-color: #1d4ed8; }
         .result { margin-top: 20px; text-align: left; background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 8px; }
-        .result h3 { margin-top: 0; color: #111827; font-size: 16px; }
-        .answer-box { margin-top: 10px; background: #eff6ff; border-left: 4px solid #2563eb; padding: 10px; font-size: 15px; color: #1e40af; }
+        .result h3 { margin-top: 0; color: #111827; font-size: 16px; line-height: 1.4; }
+        .answer-box { margin-top: 10px; background: #eff6ff; border-left: 4px solid #2563eb; padding: 12px; font-size: 15px; color: #1e40af; line-height: 1.4; }
         .hidden { display: none; }
-        .error { color: #dc2626; font-weight: bold; margin-top: 15px; }
+        .error { color: #dc2626; font-weight: bold; margin-top: 15px; font-size: 14px; }
+        .loading { color: #2563eb; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -43,7 +44,7 @@
             <button onclick="consultarCarta()">Consultar Respuesta</button>
         </div>
 
-        <div id="loading" class="hidden">Buscando respuesta...</div>
+        <div id="loading" class="hidden loading">Buscando respuesta...</div>
 
         <div id="result" class="hidden result">
             <h3 id="qText"></h3>
@@ -58,8 +59,8 @@
     </div>
 
     <script>
-        // ⚠️ API a la base de datos ⚠️
-        const API_URL = "https://script.google.com/macros/s/AKfycbz_WyeO2hdhjq0k-P3tZLcwjjsvHmDF1a-Q4QS3fnUlsjna9QV39bxxK_3uH-cqACwgXw/exec";
+        // ⚠️ PEGA AQUÍ ABAJO LA URL DE TU APPS SCRIPT ENTRE LAS COMILLAS (debe terminar en /exec) ⚠️
+        const API_URL = "PEGAR_AQUI_TU_URL_DE_APPS_SCRIPT";
 
         async function consultarCarta() {
             const categoria = document.getElementById('cardCategory').value;
