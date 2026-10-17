@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador de Cartas - Juego Híbrido</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .card-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; }
+        h2 { color: #1f2937; margin-bottom: 10px; }
+        p { color: #4b5563; font-size: 14px; margin-bottom: 20px; }
+        .input-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        input { padding: 10px 15px; font-size: 16px; width: 60%; border: 1px solid #d1d5db; border-radius: 6px; outline: none; }
+        input:focus { border-color: #2563eb; }
+        button { padding: 10px 20px; font-size: 16px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+        button:hover { background-color: #1d4ed8; }
+        .result { margin-top: 20px; text-align: left; background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 8px; }
+        .result h3 { margin-top: 0; color: #111827; font-size: 16px; }
+        .answer-box { margin-top: 10px; background: #eff6ff; border-left: 4px solid #2563eb; padding: 10px; font-size: 15px; color: #1e40af; }
+        .hidden { display: none; }
+        .error { color: #dc2626; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="card-box">
+        <h2>Verificador de Carta</h2>
+        <p>Ingresa el número impreso en tu tarjeta física:</p>
+        
+        <div class="input-group">
+            <input type="number" id="cardId" placeholder="Ej. 1" min="1" />
+            <button onclick="consultarCarta()">Consultar</button>
+        </div>
+
+        <div id="loading" class="hidden">Buscando respuesta...</div>
+
+        <div id="result" class="hidden result">
+            <h3 id="qText"></h3>
+            <div class="answer-box">
+                <strong>Respuesta:</strong> <span id="aText"></span>
+            </div>
+        </div>
+
+        <div id="errorMsg" class="hidden error">
+            <p>No se encontró ninguna tarjeta con ese número.</p>
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ API a la base de datos ⚠️
+        const API_URL = "https://script.google.com/macros/s/AKfycbz_WyeO2hdhjq0k-P3tZLcwjjsvHmDF1a-Q4QS3fnUlsjna9QV39bxxK_3uH-cqACwgXw/exec";
+
+        // Detectar si la URL trae un parámetro ?id=X (ideal para códigos QR)
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if (id) {
+                document.getElementById('cardId').value = id;
+                consultarCarta();
+            }
+        }
+
+        async function consultarCarta() {
+            const id = document.getElementById('cardId').value;
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('errorMsg');
+            const loadingDiv = document.getElementById('loading');
+
+            resultDiv.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+
+            if (!id) {
+                alert("Por favor ingresa un número de tarjeta.");
+                return;
+            }
+
+            loadingDiv.classList.remove('hidden');
+
+            try {
+                const response = await fetch(`${API_URL}?id=${id}`);
+                const data = await response.json();
+
+                loadingDiv.classList.add('hidden');
+
+                if (data.encontrado) {
+                    document.getElementById('qText').innerText = "Pregunta: " + data.pregunta;
+                    document.getElementById('aText').innerText = data.respuesta;
+                    resultDiv.classList.remove('hidden');
+                } else {
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                loadingDiv.classList.add('hidden');
+                alert("Ocurrió un error al conectar con la base de datos.");
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
